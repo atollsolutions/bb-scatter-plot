@@ -5,18 +5,18 @@
     "name": "scatter-plot",
     "friendlyName": "scatter-plot",
     "description": "An amazing Budibase component!",
-    "icon": "Text",
+    "icon": "chart-scatter",
 
     "settings": [
       {
         "type": "dataProvider",
-        "label": "Data provider",
+        "label": "Static Data provider",
         "key": "dataProvider",
         "required": true
       },
       {
         "type": "dataProvider",
-        "label": "Data provider 2",
+        "label": " Dynamic Data provider",
         "key": "dataProvider2",
         "required": false
       },
@@ -60,6 +60,24 @@
         "label": "Y axis dynamic",
         "key": "yaxis2",
         "required": false
+      },
+      {
+        "type": "number",
+        "label": "x steps",
+        "key": "xscale",
+        "required": true
+      },
+      {
+        "type": "number",
+        "label": "y steps",
+        "key": "yscale",
+        "required": true
+      },
+      {
+        "type": "boolean",
+        "label": "Remove aspect ratio",
+        "key": "ar",
+        "required": true
       }
     ]
   }

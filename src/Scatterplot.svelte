@@ -11,6 +11,10 @@
 	export let xaxis2;
 	export let yaxis2;
 	export let timeField2;
+	export let xscale;
+	export let yscale;
+	export let ar;
+	export let title;
 
 	let svg;
 	let width = 500;
@@ -35,7 +39,7 @@
 			minX = item[xaxis] < minX ? item[xaxis] : minX;
 			minY = item[yaxis] < minY ? item[yaxis] : minY;
 			if (!!item[timeField]) {
-				const time = new Date(item[timeField]);
+				let time = new Date(item[timeField]);
 				tMax = time > tMax ? time : tMax;
 				tMin = time < tMin ? time : tMin;
 			}
@@ -50,7 +54,7 @@
 				minX = item[xaxis2] < minX ? item[xaxis2] : minX;
 				minY = item[yaxis2] < minY ? item[yaxis2] : minY;
 				if (!!item[timeField]) {
-				const time = new Date(item[timeField2]);
+				let time = new Date(item[timeField2]);
 				t2Max = time > t2Max ? time : t2Max;
 				t2Min = time < t2Min ? time : t2Min;
 				}
@@ -58,50 +62,55 @@
 		}
 	}
 
-	minX = parseFloat(minX);
-	minY = parseFloat(minY);
-	maxX = parseFloat(maxX);
-	maxY = parseFloat(maxY);
+	minX = Math.floor(parseInt(minX)/xscale) * xscale - xscale;;
+	minY = Math.floor(parseInt(minY)/yscale) * yscale - yscale;
+	maxX = Math.floor(parseInt(maxX)/xscale) * xscale + xscale;
+	maxY = Math.floor(parseInt(maxY)/yscale) * yscale + yscale;
 
-	for (let i = minX; i <= maxX; i=i+ (maxX/4)) {
+	for (let i = minX; i <= maxX; i=i+ xscale) {
 		xRange.push(i);
 	}
 
-	for (let i = minY; i <= maxY; i=i+(maxY/4)) {
+	for (let i = minY; i <= maxY; i=i+ yscale) {
 		yRange.push(i);
 	}
 
-	const timeDiff = Math.abs(tMax - tMin);
+	let timeDiff = Math.abs(tMax - tMin);
 
-	const pointColor = (time) => {
+	let pointColor = (time) => {
 		if (!time) {
 			return "#ccc"
 		}
-		const f = chroma.scale(['yellow', 'red', 'black']);
-		const t = new Date(time);
-		const fraction =  Math.abs(t - tMin)/timeDiff
+		let f = chroma.scale(['yellow', 'red', 'black']);
+		let t = new Date(time);
+		let fraction =  Math.abs(t - tMin)/timeDiff
 		return f(fraction).toString() 
 	}
 
-	const pointColor2 = (time) => {
-		const f = chroma.scale(['rgba(2,0,36,1)', 'rgba(9,9,121,1)', 'rgba(0,212,255,1)']);
+	let pointColor2 = (time) => {
 		if (!time) {
 			return "tomato"
 		}
-		const t = new Date(time);
-		const fraction =  Math.abs(t - tMin)/timeDiff
+		let f = chroma.scale(['rgba(2,0,36,1)', 'rgba(9,9,121,1)', 'rgba(0,212,255,1)']);
+		let t = new Date(time);
+		let fraction =  Math.abs(t - tMin)/timeDiff
 		return f(fraction).toString() 
 	}
 
-	const padding = { top: 20, right: 40, bottom: 40, left: 40 };
+	let padding = { top: 20, right: 40, bottom: 40, left: 40 };
+
+	
+	let xLen = parseInt((width - padding.right)/(xRange.length-1));
+	let yLen = parseInt((height - padding.bottom)/(yRange.length-1));
+   	let minRange = Math.min(xLen, yLen);
 
 	$: xScale = scaleLinear()
 		.domain([minX, maxX])
-		.range([padding.left, width - padding.right]);
+		.range([padding.left, !ar ? minRange*(xRange.length-1) :  width - padding.right]);
 
 	$: yScale = scaleLinear()
 		.domain([minY, maxY])
-		.range([height - padding.bottom, padding.top]);
+		.range([!ar ? minRange*(yRange.length-1) : height - padding.bottom, padding.top]);
 
 	$: xTicks = 
 		xRange;
@@ -109,31 +118,37 @@
 	$: yTicks = 
 		yRange;
 
-	onMount(resize);
+	// onMount(resize);
 
-	function resize() {
-		({ width, height } = svg.getBoundingClientRect());
-	}
+	// function resize() {
+	// 	({ width, height } = svg.getBoundingClientRect());
+	// }
 
 </script>
 
-<svelte:window on:resize='{resize}'/>
-{#if !!points && !!points.rows && timeField}
-	<div class="grad"><div style="color: black;">{tMin.getSeconds()}s</div><div style="color: yellow;">{tMax.getSeconds()}s</div></div>
-{/if}
+<svelte:window />
 
-{#if !!points2 && !!points2.rows && timeField2}
-	<div class="grad2"><div style="color: rgba(0,212,255,1);">{t2Min.getSeconds()}s</div><div style="color: rgba(2,0,36,1);">{t2Max.getSeconds()}s</div></div>
-{/if}
+<h3 class='title' style="width: { !ar ? minRange*(xRange.length-1) :  width}" >{title}</h3>
 
-<svg bind:this={svg}>
+<div class="timeLegends" style="width: { !ar ? minRange*(xRange.length-1) :  width}">
+	{#if !!points && !!points.rows && timeField}
+		<div class="grad"><div style="color: black;">{tMin.getSeconds()}s</div><div style="color: yellow;">{tMax.getSeconds()}s</div></div>
+	{/if}
+
+	{#if !!points2 && !!points2.rows && timeField2}
+		<div class="grad2"><div style="color: rgba(0,212,255,1);">{t2Min.getSeconds()}s</div><div style="color: rgba(2,0,36,1);">{t2Max.getSeconds()}s</div></div>
+	{/if}
+</div>
+
+
+<svg bind:this={svg} style="width: {!ar ? minRange*(xRange.length-1) + 32:  width }; height: {!ar ? minRange*(yRange.length-1)  + 32 : height + 16};">
 
 	<!-- y axis -->
 	<g class='axis y-axis'>
 		{#each yTicks as tick}
 			<g class='tick tick-{tick}' transform='translate(0, {yScale(tick)})'>
-				<line x1='{padding.left}' x2='{xScale(maxX + 10)}'/>
-				<text x='{padding.left - 8}' y='+4'>{parseFloat(tick).toFixed(2)}</text>
+				<line x1='{padding.left}' x2='{xScale(maxX)}'/>
+				<text x='{padding.left - 8}' y='+4'>{parseFloat(tick).toFixed(0)}</text>
 			</g>
 		{/each}
 	</g>
@@ -142,8 +157,8 @@
 	<g class='axis x-axis'>
 		{#each xTicks as tick}
 			<g class='tick' transform='translate({xScale(tick)},0)'>
-				<line y1='{yScale(minY)}' y2='{yScale(maxY + 10)}'/>
-				<text y='{height - padding.bottom + 16}'>{parseFloat(tick).toFixed(2)}</text>
+				<line y1='{yScale(minY)}' y2='{yScale(maxY)}'/>
+					<text y='{!ar ? minRange*(yRange.length-1) + 16 : height - padding.bottom + 16}'>{parseFloat(tick).toFixed(0)}</text>
 			</g>
 		{/each}
 	</g>
@@ -166,14 +181,18 @@
 	
 </svg>
 
-	<!-- <div>Hello  {points2.rows[0][xaxis2]} {points.rows[0][xaxis]}</div> -->
-<!-- <div style="display: flex;">{Object.keys(points.datasource)}</div>
-<div>{Object.keys(points.datasource.fields)}</div> -->
 
 <style>
+	.timeLegends {
+		display: flex;
+		justify-content: center;
+	}
+	.title {
+    	text-align: center;
+  	}
 	.grad {
 		background: rgb(2,0,36);
-		background: linear-gradient(90deg, yellow 0%, red 50%, black 100%); 
+		background: linear-gradient(90deg, yellow 0%, red 50%, black 100%);
 		height: 19px; 
 		width:40%;
 		display: flex;
@@ -182,18 +201,12 @@
 	}
 	.grad2 {
 		background: rgb(2,0,36);
-		background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 50%, rgba(0,212,255,1) 100%); 
+		background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 50%, rgba(0,212,255,1) 100%);
 		height: 19px; 
 		width:40%;
 		display: flex;
 		justify-content: space-between;
 		margin: 10px;
-	}
-
-	svg {
-		width: 90%;
-		height: 90%;
-		float: left;
 	}
 
 	circle {
@@ -217,4 +230,5 @@
 	.y-axis text {
 		text-anchor: end;
 	}
+	
 </style>
