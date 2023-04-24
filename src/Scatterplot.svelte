@@ -140,7 +140,7 @@
 	{/if}
 
 	{#if !!points2 && !!points2.rows && timeField2}
-		<div class="grad2"><div style="color: rgba(0,212,255,1);">{t2Min.getSeconds()}s</div><div style="color: rgba(2,0,36,1);">{t2Max.getSeconds()}s</div></div>
+		<div class="grad2"><div style="color: rgba(0,212,255,1);">{0}s</div><div style="color: rgba(2,0,36,1);">{(t2Max.getSeconds()-t2Min.getSeconds())}s</div></div>
 	{/if}
 </div>
 
