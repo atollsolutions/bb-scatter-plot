@@ -136,11 +136,11 @@
 
 <div class="timeLegends" style="width: { !ar ? minRange*(xRange.length-1) :  width}">
 	{#if !!points && !!points.rows && timeField}
-		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax.getSeconds()-tMin.getSeconds())}s</div></div>
+		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax.getTime()-tMin.getTime())/1000}s</div></div>
 	{/if}
 
 	{#if !!points2 && !!points2.rows && timeField2}
-		<div class="grad2"><div style="color: rgba(0,212,255,1);">{0}s</div><div style="color: rgba(2,0,36,1);">{(t2Max.getSeconds()-t2Min.getSeconds())}s</div></div>
+		<div class="grad2"><div style="color: rgba(0,212,255,1);">{0}s</div><div style="color: rgba(2,0,36,1);">{(t2Max.getTime()-t2Min.getTime())/1000}s</div></div>
 	{/if}
 </div>
 
