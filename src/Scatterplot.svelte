@@ -136,7 +136,7 @@
 
 <div class="timeLegends" style="width: { !ar ? minRange*(xRange.length-1) :  width}">
 	{#if !!points && !!points.rows && timeField}
-		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax-tMin).getSeconds()}s</div></div>
+		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax.getSeconds()-tMin.getSeconds())}s</div></div>
 	{/if}
 
 	{#if !!points2 && !!points2.rows && timeField2}

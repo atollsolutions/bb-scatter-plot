@@ -1,6 +1,6 @@
 {
   "name": "scatter-plot",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "An amazing Budibase component!",
   "license": "MIT",
   "svelte": "index.js",

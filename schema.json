@@ -32,17 +32,18 @@
         "key": "xaxis",
         "required": true
       },
-      {
-        "type": "text",
-        "label": "Time: Static",
-        "key": "timeField",
-        "required": false
-      },
+
       {
         "type": "text",
         "label": "Y-Axis: Static",
         "key": "yaxis",
         "required": true
+      },
+      {
+        "type": "text",
+        "label": "Time: Static",
+        "key": "timeField",
+        "required": false
       },
       {
         "type": "text",
@@ -52,14 +53,14 @@
       },
       {
         "type": "text",
-        "label": "Time: Dynamic",
-        "key": "timeField2",
+        "label": "Y-Axis: Dynamic",
+        "key": "yaxis2",
         "required": false
       },
       {
         "type": "text",
-        "label": "Y-Axis: Dynamic",
-        "key": "yaxis2",
+        "label": "Time: Dynamic",
+        "key": "timeField2",
         "required": false
       },
       {
