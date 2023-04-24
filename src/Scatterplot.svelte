@@ -24,13 +24,15 @@
 	let maxY = Number.NEGATIVE_INFINITY;
 	let minX = 0;
 	let minY = 0;
-	let tMax = new Date(points.rows[0][timeField]);
-	let tMin = new Date(points.rows[0][timeField]);
-	let t2Max = new Date(points2.rows[0][timeField2]);
-	let t2Min = new Date(points2.rows[0][timeField2]);
+	let tMax = !!points && !!points.rows && timeField ? new Date(points.rows[0][timeField]) : undefined;
+	let tMin = !!points && !!points.rows && timeField ? new Date(points.rows[0][timeField]) : undefined;
+
+	let t2Max = !!points2 && !!points2.rows && timeField2 ? new Date(points2.rows[0][timeField2]) : undefined;
+	let t2Min =  !!points2 && !!points2.rows && timeField2 ? new Date(points2.rows[0][timeField2]) : undefined;
 	let xRange = [];
 	let yRange = [];
 
+	if (!!points && !! points.rows) {
 
 	for (let item of points.rows) {
 		if (!!item[xaxis] && !!item[yaxis] && item[yaxis] != "" && item[xaxis] != "") {
@@ -46,14 +48,16 @@
 		}
 	}
 
-	if (!!points2 && points2.rows) {
+	}
+
+	if (!!points2 && !!points2.rows) {
 		for (let item of points2.rows) {
 			if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
 				maxX = item[xaxis2] > maxX ? item[xaxis2] : maxX;
 				maxY = item[yaxis2] > maxY ? item[yaxis2] : maxY;
 				minX = item[xaxis2] < minX ? item[xaxis2] : minX;
 				minY = item[yaxis2] < minY ? item[yaxis2] : minY;
-				if (!!item[timeField]) {
+				if (!!item[timeField] && t2Max && t2Min) {
 				let time = new Date(item[timeField2]);
 				t2Max = time > t2Max ? time : t2Max;
 				t2Min = time < t2Min ? time : t2Min;
@@ -91,7 +95,7 @@
 		if (!time) {
 			return "tomato"
 		}
-		let f = chroma.scale(['rgba(2,0,36,1)', 'rgba(9,9,121,1)', 'rgba(0,212,255,1)']);
+		let f = chroma.scale(['rgba(,0,36,1)', 'rgba(9,9,121,1)', 'rgba(0,212,255,1)']);
 		let t = new Date(time);
 		let fraction =  Math.abs(t - tMin)/timeDiff
 		return f(fraction).toString() 
@@ -145,22 +149,26 @@
 
 	<!-- y axis -->
 	<g class='axis y-axis'>
-		{#each yTicks as tick}
-			<g class='tick tick-{tick}' transform='translate(0, {yScale(tick)})'>
-				<line x1='{padding.left}' x2='{xScale(maxX)}'/>
-				<text x='{padding.left - 8}' y='+4'>{parseFloat(tick).toFixed(0)}</text>
-			</g>
-		{/each}
+		{#if !!points && !!points.rows && !!xaxis && !!yaxis}
+			{#each yTicks as tick}
+				<g class='tick tick-{tick}' transform='translate(0, {yScale(tick)})'>
+					<line x1='{padding.left}' x2='{xScale(maxX)}'/>
+					<text x='{padding.left - 8}' y='+4'>{parseFloat(tick).toFixed(0)}</text>
+				</g>
+			{/each}
+		{/if}
 	</g>
 
 	<!-- x axis -->
 	<g class='axis x-axis'>
-		{#each xTicks as tick}
-			<g class='tick' transform='translate({xScale(tick)},0)'>
-				<line y1='{yScale(minY)}' y2='{yScale(maxY)}'/>
-					<text y='{!ar ? minRange*(yRange.length -1) + 16 : height - padding.bottom + 16}'>{parseFloat(tick).toFixed(0)}</text>
-			</g>
-		{/each}
+		{#if !!points && !!points.rows && !!xaxis && !!yaxis}
+			{#each xTicks as tick}
+				<g class='tick' transform='translate({xScale(tick)},0)'>
+					<line y1='{yScale(minY)}' y2='{yScale(maxY)}'/>
+						<text y='{!ar ? minRange*(yRange.length -1) + 16 : height - padding.bottom + 16}'>{parseFloat(tick).toFixed(0)}</text>
+				</g>
+			{/each}
+		{/if}
 	</g>
 
 	<!-- data -->
@@ -171,9 +179,9 @@
 	{/each}
 
 		
-	{#each points2.rows as point}
-		{#if !!points2 && !!points2.rows && !!xaxis2 && !!yaxis2 && !!point[yaxis2] && !!point[xaxis2]}
-			<circle cx='{xScale(parseFloat(point[xaxis2]))}' cy='{yScale(parseFloat(point[yaxis2]))}' r='5' fill={pointColor2(point[timeField2])}/>
+	{#each points2.rows as point2}
+		{#if !!points2 && !!points2.rows && !!xaxis2 && !!yaxis2 && !!point2[yaxis2] && !!point2[xaxis2]}
+			<circle cx='{xScale(parseFloat(point2[xaxis2]))}' cy='{yScale(parseFloat(point2[yaxis2]))}' r='5' fill={pointColor2(point2[timeField2])}/>
 		{/if}
 	{/each}
 
