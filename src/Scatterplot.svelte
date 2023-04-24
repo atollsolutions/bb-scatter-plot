@@ -46,7 +46,7 @@
 		}
 	}
 
-	if (!!points2.rows) {
+	if (!!points2 && points2.rows) {
 		for (let item of points2.rows) {
 			if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
 				maxX = item[xaxis2] > maxX ? item[xaxis2] : maxX;
