@@ -19,9 +19,8 @@
 </script>
 
 <div use:styleable={$component.styles}>
-
-
-  <Scatterplot points={dataProvider} points2={dataProvider2} xaxis={xaxis}  yaxis={yaxis} 
-  timeField={timeField} xaxis2={xaxis2}  yaxis2={yaxis2} timeField2={timeField2} xscale={xscale} yscale={yscale} ar={ar} title={title}/>
-
+    {#if !!dataProvider && !!dataProvider.rows  && !!xaxis && !!yaxis}
+     <Scatterplot points={dataProvider} points2={dataProvider2} xaxis={xaxis}  yaxis={yaxis} 
+       timeField={timeField} xaxis2={xaxis2}  yaxis2={yaxis2} timeField2={timeField2} xscale={xscale} yscale={yscale} ar={ar} title={title}/>
+    {/if}
 </div>

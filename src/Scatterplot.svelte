@@ -132,7 +132,7 @@
 
 <div class="timeLegends" style="width: { !ar ? minRange*(xRange.length-1) :  width}">
 	{#if !!points && !!points.rows && timeField}
-		<div class="grad"><div style="color: black;">{tMin.getSeconds()}s</div><div style="color: yellow;">{tMax.getSeconds()}s</div></div>
+		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax-tMin).getSeconds()}s</div></div>
 	{/if}
 
 	{#if !!points2 && !!points2.rows && timeField2}
@@ -158,7 +158,7 @@
 		{#each xTicks as tick}
 			<g class='tick' transform='translate({xScale(tick)},0)'>
 				<line y1='{yScale(minY)}' y2='{yScale(maxY)}'/>
-					<text y='{!ar ? minRange*(yRange.length-1) + 16 : height - padding.bottom + 16}'>{parseFloat(tick).toFixed(0)}</text>
+					<text y='{!ar ? minRange*(yRange.length -1) + 16 : height - padding.bottom + 16}'>{parseFloat(tick).toFixed(0)}</text>
 			</g>
 		{/each}
 	</g>
