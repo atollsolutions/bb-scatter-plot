@@ -34,37 +34,37 @@
 
 	if (!!points && !! points.rows) {
 
-	for (let item of points.rows) {
-		if (!!item[xaxis] && !!item[yaxis] && item[yaxis] != "" && item[xaxis] != "") {
-			maxX = item[xaxis] > maxX ? item[xaxis] : maxX;
-			maxY = item[yaxis] > maxY ? item[yaxis] : maxY;
-			minX = item[xaxis] < minX ? item[xaxis] : minX;
-			minY = item[yaxis] < minY ? item[yaxis] : minY;
-			if (!!item[timeField]) {
-				let time = new Date(item[timeField]);
-				tMax = time > tMax ? time : tMax;
-				tMin = time < tMin ? time : tMin;
-			}
-		}
-	}
-
-	}
-
-	if (!!points2 && !!points2.rows) {
-		for (let item of points2.rows) {
-			if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
-				maxX = item[xaxis2] > maxX ? item[xaxis2] : maxX;
-				maxY = item[yaxis2] > maxY ? item[yaxis2] : maxY;
-				minX = item[xaxis2] < minX ? item[xaxis2] : minX;
-				minY = item[yaxis2] < minY ? item[yaxis2] : minY;
-				if (!!item[timeField] && t2Max && t2Min) {
-				let time = new Date(item[timeField2]);
-				t2Max = time > t2Max ? time : t2Max;
-				t2Min = time < t2Min ? time : t2Min;
+		for (let item of points.rows) {
+			if (!!item[xaxis] && !!item[yaxis] && item[yaxis] != "" && item[xaxis] != "") {
+				maxX = parseFloat(item[xaxis]) > maxX ? parseFloat(item[xaxis]) : maxX;
+				maxY = parseFloat(item[yaxis]) > maxY ? parseFloat(item[yaxis]) : maxY;
+				minX = parseFloat(item[xaxis]) < minX ? parseFloat(item[xaxis]) : minX;
+				minY = parseFloat(item[yaxis]) < minY ? parseFloat(item[yaxis]) : minY;
+				if (!!item[timeField]) {
+					let time = new Date(item[timeField]);
+					tMax = time > tMax ? time : tMax;
+					tMin = time < tMin ? time : tMin;
 				}
 			}
 		}
+
+}
+
+if (!!points2 && !!points2.rows) {
+	for (let item of points2.rows) {
+		if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
+			maxX = parseFloat(item[xaxis2]) > maxX ? parseFloat(item[xaxis2]) : maxX;
+			maxY = parseFloat(item[yaxis2]) > maxY ? parseFloat(item[yaxis2]) : maxY;
+			minX = parseFloat(item[xaxis2]) < minX ? parseFloat(item[xaxis2]) : minX;
+			minY = parseFloat(item[yaxis2]) < minY ? parseFloat(item[yaxis2]) : minY;
+			if (!!item[timeField] && t2Max && t2Min) {
+			let time = new Date(item[timeField2]);
+			t2Max = time > t2Max ? time : t2Max;
+			t2Min = time < t2Min ? time : t2Min;
+			}
+		}
 	}
+}
 
 	minX = Math.floor(parseInt(minX)/xscale) * xscale - xscale;;
 	minY = Math.floor(parseInt(minY)/yscale) * yscale - yscale;
