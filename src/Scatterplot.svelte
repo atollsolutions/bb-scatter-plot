@@ -32,51 +32,51 @@
 	let xRange = [];
 	let yRange = [];
 
-	if (!!points && !! points.rows) {
-
+	if (!!points && !!points.rows) {
 		for (let item of points.rows) {
 			if (!!item[xaxis] && !!item[yaxis] && item[yaxis] != "" && item[xaxis] != "") {
 				maxX = parseFloat(item[xaxis]) > maxX ? parseFloat(item[xaxis]) : maxX;
 				maxY = parseFloat(item[yaxis]) > maxY ? parseFloat(item[yaxis]) : maxY;
 				minX = parseFloat(item[xaxis]) < minX ? parseFloat(item[xaxis]) : minX;
 				minY = parseFloat(item[yaxis]) < minY ? parseFloat(item[yaxis]) : minY;
-				if (!!item[timeField]) {
+
+				if (!!timeField && !!item[timeField] && tMax && tMin) {
 					let time = new Date(item[timeField]);
 					tMax = time > tMax ? time : tMax;
 					tMin = time < tMin ? time : tMin;
 				}
 			}
 		}
+	}
 
-}
+	if (!!points2 && !!points2.rows) {
+		for (let item of points2.rows) {
+			if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
+				maxX = parseFloat(item[xaxis2]) > maxX ? parseFloat(item[xaxis2]) : maxX;
+				maxY = parseFloat(item[yaxis2]) > maxY ? parseFloat(item[yaxis2]) : maxY;
+				minX = parseFloat(item[xaxis2]) < minX ? parseFloat(item[xaxis2]) : minX;
+				minY = parseFloat(item[yaxis2]) < minY ? parseFloat(item[yaxis2]) : minY;
 
-if (!!points2 && !!points2.rows) {
-	for (let item of points2.rows) {
-		if (!!item[xaxis2] && !!item[yaxis2] && item[yaxis2] != "" && item[xaxis2] != "") {
-			maxX = parseFloat(item[xaxis2]) > maxX ? parseFloat(item[xaxis2]) : maxX;
-			maxY = parseFloat(item[yaxis2]) > maxY ? parseFloat(item[yaxis2]) : maxY;
-			minX = parseFloat(item[xaxis2]) < minX ? parseFloat(item[xaxis2]) : minX;
-			minY = parseFloat(item[yaxis2]) < minY ? parseFloat(item[yaxis2]) : minY;
-			if (!!item[timeField] && t2Max && t2Min) {
-			let time = new Date(item[timeField2]);
-			t2Max = time > t2Max ? time : t2Max;
-			t2Min = time < t2Min ? time : t2Min;
+				if (!!timeField2 && !!item[timeField2] && t2Max && t2Min) {
+				let time = new Date(item[timeField2]);
+				t2Max = time > t2Max ? time : t2Max;
+				t2Min = time < t2Min ? time : t2Min;
+				}
 			}
 		}
 	}
-}
 
 	minX = Math.floor(parseInt(minX)/xscale) * xscale - xscale;;
 	minY = Math.floor(parseInt(minY)/yscale) * yscale - yscale;
 	maxX = Math.floor(parseInt(maxX)/xscale) * xscale + xscale;
 	maxY = Math.floor(parseInt(maxY)/yscale) * yscale + yscale;
 
-	for (let i = minX; i <= maxX; i=i+ xscale) {
-		xRange.push(i);
+	for (let j = minX; j <= maxX; j=j+ xscale) {
+		xRange.push(j);
 	}
 
-	for (let i = minY; i <= maxY; i=i+ yscale) {
-		yRange.push(i);
+	for (let j = minY; j <= maxY; j=j+ yscale) {
+		yRange.push(j);
 	}
 
 	let timeDiff = Math.abs(tMax - tMin);
@@ -85,7 +85,7 @@ if (!!points2 && !!points2.rows) {
 		if (!time) {
 			return "#ccc"
 		}
-		let f = chroma.scale(['yellow', 'red', 'black']);
+		let f = chroma.scale(['#b0f2bc', '#4cc8a3', '#257d98']);
 		let t = new Date(time);
 		let fraction =  Math.abs(t - tMin)/timeDiff
 		return f(fraction).toString() 
@@ -95,7 +95,8 @@ if (!!points2 && !!points2.rows) {
 		if (!time) {
 			return "tomato"
 		}
-		let f = chroma.scale(['rgba(,0,36,1)', 'rgba(9,9,121,1)', 'rgba(0,212,255,1)']);
+
+		let f = chroma.scale(['#f3cbd3', '#ca699d', '#6c2167']);
 		let t = new Date(time);
 		let fraction =  Math.abs(t - tMin)/timeDiff
 		return f(fraction).toString() 
@@ -122,25 +123,26 @@ if (!!points2 && !!points2.rows) {
 	$: yTicks = 
 		yRange;
 
-	// onMount(resize);
+	onMount(resize);
 
-	// function resize() {
-	// 	({ width, height } = svg.getBoundingClientRect());
-	// }
+	function resize() {
+		({ width, height } = svg.getBoundingClientRect());
+	}
 
 </script>
 
-<svelte:window />
+<svelte:window on:resize='{resize}'/>
 
 <h3 class='title' style="width: { !ar ? minRange*(xRange.length-1) :  width}" >{title}</h3>
 
 <div class="timeLegends" style="width: { !ar ? minRange*(xRange.length-1) :  width}">
-	{#if !!points && !!points.rows && timeField}
-		<div class="grad"><div style="color: black;">{0}s</div><div style="color: yellow;">{(tMax.getTime()-tMin.getTime())/1000}s</div></div>
+	{#if !!points && !!points.rows && timeField && tMax && tMin}
+		<div class="grad"><div style="color: #257d98;">{0}s</div><div style="color: #b0f2bc;">{parseFloat((tMax.getTime()-tMin.getTime())/1000).toFixed(2)}s</div></div>
 	{/if}
 
-	{#if !!points2 && !!points2.rows && timeField2}
-		<div class="grad2"><div style="color: rgba(0,212,255,1);">{0}s</div><div style="color: rgba(2,0,36,1);">{(t2Max.getTime()-t2Min.getTime())/1000}s</div></div>
+	{#if !!points2 && !!points2.rows && timeField2 && t2Max && t2Min}
+
+		<div class="grad2"><div style="color: #6c2167;">{0}s</div><div style="color: #f3cbd3;">{parseFloat((t2Max.getTime()-t2Min.getTime())/1000).toFixed(2)}s</div></div>
 	{/if}
 </div>
 
@@ -173,15 +175,15 @@ if (!!points2 && !!points2.rows) {
 
 	<!-- data -->
 	{#each points.rows as point}
-	{#if !!points && !!points.rows && !!xaxis && !!yaxis && !!point[yaxis] && !!point[xaxis]}
+	{#if !!xaxis && !!yaxis && !!point[yaxis] && !!point[xaxis]}
 		<circle cx='{xScale(parseFloat(point[xaxis]))}' cy='{yScale(parseFloat(point[yaxis]))}' r='5' fill={pointColor(point[timeField])}/>
 	{/if}
 	{/each}
 
 		
 	{#each points2.rows as point2}
-		{#if !!points2 && !!points2.rows && !!xaxis2 && !!yaxis2 && !!point2[yaxis2] && !!point2[xaxis2]}
-			<circle cx='{xScale(parseFloat(point2[xaxis2]))}' cy='{yScale(parseFloat(point2[yaxis2]))}' r='5' fill={pointColor2(point2[timeField2])}/>
+		{#if !!xaxis2 && !!yaxis2 && !!point2[yaxis2] && !!point2[xaxis2]}
+			<circle cx='{xScale(parseFloat(point2[xaxis2]))}' cy='{yScale(parseFloat(point2[yaxis2]))}' r='5' fill={pointColor2( point2[timeField2])}/>
 		{/if}
 	{/each}
 
@@ -200,7 +202,7 @@ if (!!points2 && !!points2.rows) {
   	}
 	.grad {
 		background: rgb(2,0,36);
-		background: linear-gradient(90deg, yellow 0%, red 50%, black 100%);
+		background: linear-gradient(90deg, #b0f2bc 0%, #4cc8a3 50%, #257d98 100%);
 		height: 19px; 
 		width:40%;
 		display: flex;
@@ -209,7 +211,7 @@ if (!!points2 && !!points2.rows) {
 	}
 	.grad2 {
 		background: rgb(2,0,36);
-		background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 50%, rgba(0,212,255,1) 100%);
+		background: linear-gradient(90deg, #f3cbd3 0%, #ca699d 50%, #6c2167 100%);
 		height: 19px; 
 		width:40%;
 		display: flex;
