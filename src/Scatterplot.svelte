@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+// 	import { onMount } from 'svelte';
 	import { scaleLinear } from 'd3-scale';
 	import chroma from 'chroma-js';
 
@@ -123,15 +123,15 @@
 	$: yTicks = 
 		yRange;
 
-	onMount(resize);
+// 	onMount(resize);
 
-	function resize() {
-		({ width, height } = svg.getBoundingClientRect());
-	}
+// 	function resize() {
+// 		({ width, height } = svg.getBoundingClientRect());
+// 	}
 
 </script>
 
-<svelte:window on:resize='{resize}'/>
+<svelte:window/>
 
 <h3 class='title' style="width: { !ar ? minRange*(xRange.length-1) :  width}" >{title}</h3>
 
